@@ -1,5 +1,6 @@
 from inspect import signature as s, isfunction as f
 from json import loads as parse, dumps as stringify
+from colored import fg, bg, attr
 import random as rand
 import config
 
@@ -7,9 +8,48 @@ import config
 user_color = "white"
 console_color = "white"
 
-username = "strikeriv"
-ip = "623.45.23.43"
-pointer = ("%s@%s:-$" % (username, ip))
+class Language:
+    def __init__(self):
+        self.language = 'en-US'
+    
+    def __str__(self):
+        return self.language
+
+    def change(self, lang):
+        assert isinstance(lang, str)
+        self.language = lang
+
+language = Language()
+
+class Username:
+    def __init__(self):
+        self.username = 'null'
+    
+    def __str__(self):
+        return self.username
+
+    def value(self, username):
+        assert isinstance(username, str)
+        self.username = username
+
+class Password:
+    def __init__(self):
+        self.password = ''
+    
+    def __str__(self):
+        return self.password
+
+    def value(self, password):
+        assert isinstance(password, str)
+        self.password = password
+
+
+username = Username()
+password = Password()
+
+ip = "192.168.0.1"
+
+pointer = ("%s%s@%s%s:%s-$%s" % (fg(2), username, ip, fg(15), fg(4), attr(0)))
 pointer_color = "white"
 
 # {} is the command given by the user
@@ -91,8 +131,9 @@ help = '== Help ==\nFor help with a command, type help [command]'
 
 
 def console():
+    #print("Welcome to HackSci. ")
     while True:
-        x = input(pointer_color + pointer + console_color + " ")
+        x = input(pointer + " ")
         if x.strip() != "":
             y = x.split(" ")
             c = x.split(" ")[0]
@@ -134,4 +175,4 @@ def console():
             except (AttributeError, SyntaxError):
                 print(error_color + error.syntax_error.format(x))
 
-console()
+#console()

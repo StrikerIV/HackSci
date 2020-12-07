@@ -1,29 +1,40 @@
+import os
 import sys
 import time
-import keyboard
-from console import console
-from pynput.keyboard import Key, Listener
+from game import startGame
+from pynput import keyboard
+from colored import fg, bg, attr
+from console import username, password
 
-username = ""
-password = ""
-confirmPassword = ""
-usernameSwitch = True
+username1 = ""
+password1 = ""
+
+username1Switch = True
 confirmPasswordUpdate = True
+
 
 def clear_line(amount):
     for x in range(0, amount):
         print("\033[A\033[A")
 
+
 def remove_last_car(string, amount):
     for x in range(0, amount):
-        string = string[:-1] 
-    
+        string = string[:-1]
+
     return string
 
+
+def add_char(count, char):
+    amountOfChar = ''.join([char*count for char in char])
+    return amountOfChar
+
+
 def add_dashes(count):
-    amountOfDashes =  ''.join([char*count for char in "-"])
+    amountOfDashes = ''.join([char*count for char in "-"])
     headers = ("+------------%s+" % amountOfDashes + "   ")
     return headers
+
 
 def welcome_screen():
     print("+---------------------+")
@@ -34,121 +45,71 @@ def welcome_screen():
     time.sleep(1.5)
     print("| 1. New Game         |")
     time.sleep(0.10)
-    print("| 2. Help             |")
-    time.sleep(0.10)
-    print("| 3. Credits          |")
+    print("| 2. Credits          |")
     time.sleep(0.10)
     print("+---------------------+\n")
     time.sleep(0.10)
 
 # def update_field():
 
+
 def new_game():
 
-    global count
-    count = 1
+    global username1
+    global password1
 
-    print("+------------+")
-    print("| USERNAME - |")
-    print("+------------+")
+    confirm_password = ""
 
-    def username_update(key):
-        global usernameSwitch
-        global username
-        global count
+    def create_password():
+        global username1
+        global password1
+        global confirm_password
 
-        if not usernameSwitch: return
-        clear_line(3)
-        
-        #amountOfDashes =  ''.join([char*count for char in "-"])
-        #headers = ("+------------%s+" % amountOfDashes)
+        password1 = str(input("PASSWORD - "))
+        confirm_password = str(input("CONFIRM PASSWORD - "))
 
-        if key == Key.backspace:
-            count = count - 1
-            if count <= 0:
-                count = 1
+        if confirm_password != password1:
+            time.sleep(1)
+            print("\n%sERR : PASSWORDS DO NOT MATCH%s" % (fg(1), attr(0)))
+            time.sleep(2)
+            create_password()
 
-            headers = add_dashes(count)
-            actualKey = ''
+    print("+==+ NEW USER REGISTRATION +==+\n")
+    username1 = str(input("USERNAME - "))
+    create_password()
 
-            username = remove_last_car(username, 1)
-            print(headers)
-            print("| USERNAME - %s | " % username)
-            print(headers)
-        elif key == Key.enter: 
-            usernameSwitch = False
-            print("\n\n\n\n+------------+")
-            print("| PASSWORD - |")
-            print("+------------+")
-            count = 1
-            return
-        elif key == Key.space:
-            actualKey = ' '
-            count = count + 1
-            headers = add_dashes(count)
-            username = username + str(actualKey).replace("'", "")
-            print(headers)
-            print("| USERNAME - %s |" % username)
-            print(headers)
-        else:
-            username = username + str(key).replace("'", "")
-            count = count + 1
-            headers = add_dashes(count)
-            print(headers)
-            print("| USERNAME - %s |" % username)
-            print(headers)
+    print("\n+==+ REGISTRATION COMPLETE +==+")
+    time.sleep(1)
+    print("\n%sWARNING : Creating a new HackSci game is permanent, you cannot restart.%s" % (fg(3), attr(0)))
+    time.sleep(1)
+    start_game = str(input("\nREADY : TYPE %sENTER %sTO CONFIRM - " % (fg(1), attr(0))))
 
-    def password_update(key):
-        global confirmPasswordUpdate
-        global password
-        global count
-
-        clear_line(3)
-        
-        #amountOfDashes =  ''.join([char*count for char in "-"])
-        #headers = ("+------------%s+" % amountOfDashes)
-
-        if key == Key.backspace:
-            count = count - 1
-            if count <= 0:
-                count = 1
-
-            headers = add_dashes(count)
-            actualKey = ''
-
-            password = remove_last_car(password, 1)
-            print(headers)
-            print("| PASSWORD - %s | " % password)
-            print(headers)
-        elif key == Key.enter: 
-            Listener.stop(False)
-            return console()
-        elif key == Key.space:
-            actualKey = ' '
-            count = count + 1
-            headers = add_dashes(count)
-            password = password + str(actualKey).replace("'", "")
-            print(headers)
-            print("| PASSWORD - %s |" % password)
-            print(headers)
-        else:
-            key = "*"
-            password = password + str(key).replace("'", "")
-            count = count + 1
-            headers = add_dashes(count)
-            print(headers)
-            print("| PASSWORD - %s |" % password)
-            print(headers)
-
-    def on_press(key):
-        if usernameSwitch:
-            username_update(key)
-        else:
-            password_update(key)
-    with Listener(
-            on_press=on_press) as listener:
-        listener.join()
-
+    if start_game.upper() != "ENTER":
+        time.sleep(1)
+        print("\n%sERR : GAME FAILED TO INITIALIZE%s" % (fg(1), attr(0)))
+        time.sleep(2)
+        for x in range(0, 6):
+            time.sleep(0.5)
+            print("\nRESTORING FROM PREVIOUS SESSION SAVE%s" % add_char(x, "."))
+            if not x+1 == 6:
+                clear_line(2)
+            else:
+                time.sleep(1)
+                print("RESTORED.")
+                time.sleep(2)
+                for x in range(0, 4):
+                    time.sleep(0.5)
+                    print("\nINITIALIZING%s" % add_char(x, "."))
+                    if not x+1 == 4:
+                        clear_line(2)
+                    else:
+                        time.sleep(1)
+                        print("\nDONE.\n")
+                        time.sleep(2)
+                        return new_game()
+    else:
+        time.sleep(2)
+        startGame(username1, password1)    
 
 def main():
     welcome_screen()
@@ -157,11 +118,28 @@ def main():
     if welcomeInput == 1:
         new_game()
     elif welcomeInput == 2:
-        print("2")
-    elif welcomeInput == 3:
-        print("3")
+        print("+---------------+")
+        time.sleep(0.10)
+        print("|    Credits    |")
+        time.sleep(0.10)
+        print("+---------------+")
+        time.sleep(0.10)
+        print("|   Basically   |")
+        time.sleep(0.10)
+        print("|   Everything  |")
+        time.sleep(0.10)
+        print("+---------------+")
+        time.sleep(0.10)
+        print("|  strikeriv /  |")
+        time.sleep(0.10)
+        print("|    Matthew    |")
+        time.sleep(0.10)
+        print("+---------------+\n")
+        time.sleep(5)
+        os.system('cls')
+        return main()
     else:
-        print("invalid choice")
+        print("invalid choice") 
 
 
 main()
