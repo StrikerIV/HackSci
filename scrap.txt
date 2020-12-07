@@ -1,0 +1,41 @@
+def confirm_password_update(key):
+        global confirmPassword
+        global count
+
+        clear_line(3)
+        
+        #amountOfDashes =  ''.join([char*count for char in "-"])
+        #headers = ("+------------%s+" % amountOfDashes)
+
+        if key == Key.backspace:
+            count = count - 1
+            if count <= 0:
+                count = 1
+
+            headers = add_dashes(count)
+            actualKey = ''
+
+            confirmPassword = remove_last_car(confirmPassword, 1)
+            print(headers)
+            print("| CONFIRM PASSWORD - %s | " % confirmPassword)
+            print(headers)
+        elif key == Key.enter: 
+            if confirmPassword != password:
+                print("ERR PASSWORD INVALID - SHUTTING DOWN.....")
+                sys.exit()
+        elif key == Key.space:
+            actualKey = ' '
+            count = count + 1
+            headers = add_dashes(count)
+            confirmPassword = confirmPassword + str(actualKey).replace("'", "")
+            print(headers)
+            print("| CONFIRM PASSWORD - %s |" % confirmPassword)
+            print(headers)
+        else:
+            key = "*"
+            confirmPassword = confirmPassword + str(key).replace("'", "")
+            count = count + 1
+            headers = add_dashes(count)
+            print(headers)
+            print("| CONFIRM PASSWORD - %s |" % confirmPassword)
+            print(headers)
