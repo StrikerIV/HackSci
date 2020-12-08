@@ -1,65 +1,62 @@
-import os
+import random as rand
 import time
+import os
 
 ips = ["192.168.0.1", "68.0.2.5"]
+created_computer_ips = []
 
+def rand_key(p): 
+    key1 = "" 
+    for i in range(p): 
+        temp = str(rand.randint(0, 1)) 
+        key1 += temp 
+          
+    return(key1)  
+    
 def clear_line(amount):
     for x in range(0, amount):
         print("\033[A\033[A")
+        return x
+
 
 def remove_last_car(string, amount):
     for x in range(0, amount):
-        string = string[:-1] 
-    
+        string = string[:-1]
+        return x
+
     return string
 
+
 def add_char(count, char):
-    amountOfChar =  ''.join([char*count for char in char])
+    amountOfChar = ''.join([char*count for char in char])
     return amountOfChar
 
-def connect(ip='',end='\n'):
+
+def createComputer(ip):
+    if ip in created_computer_ips: return
+    print("hello u made it!")
+    created_computer_ips.append(ip)
+    
+
+
+createComputer("192.168.0.1")
+print("1")
+createComputer("67.246.453.3")
+print("2")
+createComputer("192.168.0.1")
+print("3")
+
+def connect(ip='', end='\n'):
     if not ip:
         return print("enter an ip address to connect to")
-    
+
     if not ip in ips:
         return print("that ip is not valid")
-        
+
     for x in range(0, 5):
         print("\nConnecting%s" % add_char(x, "."))
-        if not x+1 == 5: 
+        if not x+1 == 5:
             clear_line(2)
         else:
             print("Established connection to %s\n" % ip)
         time.sleep(0.5)
-
-    
-
-def echo(msg='',end='\n'):
-    print(msg,end=end)
-
-def python():
-    os.system("python")
-
-def bash():
-    os.system("bash")
-
-def configHelp():
-    print(
-"""
-== Help Manual ==
-Hello, welcome to the help manual!\n
-\n
-Lets get started on creating your interpreter (console)!\n
-\n
-First step is to configurate it to your own preference!\n
-To go this, go to main.py and change the variables in the configuration.\n
-! DONT CHANGE THE COMPILER'S CODE UNLESS YOU KNOW WHAT YOU ARE DOING!\n
-\n
-Next step is to start creating the commands!\n
-Go to config.py and delete all the premade functions in it if you want.\n
-The commands are just functions in python and the parameters are function parameters!\n
-\n
-Have fun!\n
-Don't forget to share your interpreter in the comments below, hope to see what you guys make!
-"""
-)

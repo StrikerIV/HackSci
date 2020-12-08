@@ -3,8 +3,6 @@ from console import console, username, password
 import time
 import os
 
-from console import language, username, password
-
 ip_addresses = []
 maxIps = 100
 
@@ -95,7 +93,7 @@ def terminal_loading(username, ip):
     s(0.25)
     print("Loading network.sys : Network System Loaded")
     s(0.25)
-    print("Loading server.sys : NNNNVIDIA Graphics Loaded\n")
+    print("Loading server.sys : NVIDIA Graphics Loaded\n")
     time.sleep(2)
     for x in range(0, 5):
         time.sleep(0.5)
@@ -105,7 +103,7 @@ def terminal_loading(username, ip):
         else:
             time.sleep(2)
             os.system('cls')
-            console()
+            console(username)
 
     time.sleep(3)
 

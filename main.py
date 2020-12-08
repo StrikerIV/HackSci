@@ -112,12 +112,13 @@ def new_game():
         startGame(username1, password1)    
 
 def main():
+    os.system('cls')
     welcome_screen()
-    welcomeInput = int(input(""))
+    welcomeInput = str(input(""))
     print("")
-    if welcomeInput == 1:
+    if welcomeInput == "1":
         new_game()
-    elif welcomeInput == 2:
+    elif welcomeInput == "2":
         print("+---------------+")
         time.sleep(0.10)
         print("|    Credits    |")
@@ -139,7 +140,10 @@ def main():
         os.system('cls')
         return main()
     else:
-        print("invalid choice") 
+        print("EYO STOP TRYIN TO BREAK THE GAME.") 
+        time.sleep(1)
+        main()
+        
 
 
 main()
