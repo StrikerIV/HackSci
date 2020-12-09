@@ -1,18 +1,21 @@
 import random as rand
+import console
 import time
 import os
 
-ips = ["192.168.0.1", "68.0.2.5"]
+ips = console.discoveredIps()
 created_computer_ips = []
 
-def rand_key(p): 
-    key1 = "" 
-    for i in range(p): 
-        temp = str(rand.randint(0, 1)) 
-        key1 += temp 
-          
-    return(key1)  
-    
+
+def randBinary(p):
+    key1 = ""
+    for i in range(p):
+        temp = str(rand.randint(0, 1))
+        key1 += temp
+
+    return(key1)
+
+
 def clear_line(amount):
     for x in range(0, amount):
         print("\033[A\033[A")
@@ -33,30 +36,43 @@ def add_char(count, char):
 
 
 def createComputer(ip):
-    if ip in created_computer_ips: return
-    print("hello u made it!")
-    created_computer_ips.append(ip)
-    
+    if ip in created_computer_ips:
+        return
+
+    directory = ('data/%s/os' % ip)
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        os.makedirs('%s/bin' % directory)
+        os.makedirs('%s/home' % directory)
+        os.makedirs('%s/logs' % directory)
+        os.makedirs('%s/os' % directory)
+
+    os_config = open("%s/os/os-config.sys" % directory, "w+")
+    os_config.write(randBinary(1000))
+
+    boot_cfg = open("%s/os/boot-cfg.dll" % directory, "w+")
+    boot_cfg.write(randBinary(350))
+
+    network_sys = open("%s/os/network.sys" % directory, "w+")
+    network_sys.write(randBinary(125))
+
+    server_sys = open("%s/os/server.sys" % directory, "w+")
+    server_sys.write(randBinary(500))
 
 
-createComputer("192.168.0.1")
-print("1")
-createComputer("67.246.453.3")
-print("2")
-createComputer("192.168.0.1")
-print("3")
+def connect(ip=''):
+    print(ips)
+    # if not ip:
+    #     return print("enter an ip address to connect to")
 
-def connect(ip='', end='\n'):
-    if not ip:
-        return print("enter an ip address to connect to")
+    # if not ip in ips:
+    #     return print("that ip is not valid")
 
-    if not ip in ips:
-        return print("that ip is not valid")
-
-    for x in range(0, 5):
-        print("\nConnecting%s" % add_char(x, "."))
-        if not x+1 == 5:
-            clear_line(2)
-        else:
-            print("Established connection to %s\n" % ip)
-        time.sleep(0.5)
+    # for x in range(0, 5):
+    #     print("\nConnecting%s" % add_char(x, "."))
+    #     if not x+1 == 5:
+    #         clear_line(2)
+    #     else:
+    #         print("Established connection to %s\n" % ip)
+    #     time.sleep(0.5)

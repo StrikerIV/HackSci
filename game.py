@@ -1,5 +1,5 @@
 import random as rand
-from console import console, username, password
+import console
 import time
 import os
 
@@ -12,9 +12,11 @@ homeIp = ""
 def s(timeToSleep):
     time.sleep(timeToSleep)
 
+
 def clear_line(amount):
     for x in range(0, amount):
         print("\033[A\033[A")
+
 
 def add_char(count, char):
     amountOfChar = ''.join([char*count for char in char])
@@ -25,6 +27,7 @@ def add_dashes(count):
     amountOfDashes = ''.join([char*count for char in "-"])
     headers = ("+------------%s+" % amountOfDashes + "   ")
     return headers
+
 
 def create_ips():
     counter = 0
@@ -103,18 +106,16 @@ def terminal_loading(username, ip):
         else:
             time.sleep(2)
             os.system('cls')
-            console(username)
+            console.console(username)
 
     time.sleep(3)
 
 
-
 def startGame(username1, password1):
     create_ips()
-    username.value(username1)
-    password.value(password1)
+    console.username.value(username1)
+    console.password.value(password1)
     homeIp = rand.choice(ip_addresses)
     terminal_loading(username1, homeIp),
 
-
-#startGame("strikeriv", "test")
+    #startGame("strikeriv", "test")

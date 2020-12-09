@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import shutil
 from game import startGame
 from pynput import keyboard
 from colored import fg, bg, attr
@@ -80,9 +81,11 @@ def new_game():
 
     print("\n+==+ REGISTRATION COMPLETE +==+")
     time.sleep(1)
-    print("\n%sWARNING : Creating a new HackSci game is permanent, you cannot restart.%s" % (fg(3), attr(0)))
+    print("\n%sWARNING : Creating a new HackSci game is permanent, you cannot restart.%s" % (
+        fg(3), attr(0)))
     time.sleep(1)
-    start_game = str(input("\nREADY : TYPE %sENTER %sTO CONFIRM - " % (fg(1), attr(0))))
+    start_game = str(
+        input("\nREADY : TYPE %sENTER %sTO CONFIRM - " % (fg(1), attr(0))))
 
     if start_game.upper() != "ENTER":
         time.sleep(1)
@@ -90,7 +93,8 @@ def new_game():
         time.sleep(2)
         for x in range(0, 6):
             time.sleep(0.5)
-            print("\nRESTORING FROM PREVIOUS SESSION SAVE%s" % add_char(x, "."))
+            print("\nRESTORING FROM PREVIOUS SESSION SAVE%s" %
+                  add_char(x, "."))
             if not x+1 == 6:
                 clear_line(2)
             else:
@@ -109,12 +113,16 @@ def new_game():
                         return new_game()
     else:
         time.sleep(2)
-        startGame(username1, password1)    
+        startGame(username1, password1)
+
 
 def main():
     os.system('cls')
+    if os.path.exists('data/'):
+        shutil.rmtree('data/')
     welcome_screen()
     welcomeInput = str(input(""))
+    welcomeInput = welcomeInput.replace(".", "")
     print("")
     if welcomeInput == "1":
         new_game()
@@ -140,10 +148,9 @@ def main():
         os.system('cls')
         return main()
     else:
-        print("EYO STOP TRYIN TO BREAK THE GAME.") 
+        print("EYO STOP TRYIN TO BREAK THE GAME.")
         time.sleep(1)
         main()
-        
 
 
 main()
