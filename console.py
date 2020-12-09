@@ -1,75 +1,11 @@
 from inspect import signature as s, isfunction as f
 from json import loads as parse, dumps as stringify
 from colored import fg, bg, attr
+from utils import variables, ips
 import random as rand
 import config
 import time
 import os
-
-
-class Username:
-    def __init__(self):
-        self.username = 'null'
-
-    def __str__(self):
-        return self.username
-
-    def value(self, username):
-        assert isinstance(username, str)
-        self.username = username
-
-
-class Password:
-    def __init__(self):
-        self.password = ''
-
-    def __str__(self):
-        return self.password
-
-    def value(self, password):
-        assert isinstance(password, str)
-        self.password = password
-
-
-class ips:
-    def __init__(self):
-        counter = 0
-        ip_addresses = []
-        maxIps = 100
-        while True:
-            if counter == maxIps:
-                break
-            int1 = rand.randint(0, 255)
-            int2 = rand.randint(0, 168)
-            int3 = rand.randint(0, 200)
-            int4 = rand.randint(0, 100)
-
-            ip_addr = ("%s.%s.%s.%s" % (int1, int2, int3, int4))
-            if ip_addr in ip_addresses:
-                return
-            ip_addresses.append(ip_addr)
-            counter += 1
-            ips_s = str(" ".join(ip_addresses))
-            self.ips = ips_s
-
-    def __str__(self):
-        return str(self.ips)
-
-
-class discoveredIps:
-    def __init__(self):
-        self.ips = ["102.168.0.1"]
-
-    def __str__(self):
-        return str(self.ips)
-
-    def push(self, value):
-        ipsArray = self.ips
-        ipsArray.append(value)
-        ipsArray = " ".join(ipsArray)
-        ipsArray = ipsArray.split(" ")
-        self.ips = ipsArray
-
 
 class error:
     syntax_error = "'{}' is not a valid command."
@@ -83,12 +19,14 @@ i = 0
 user_color = "white"
 console_color = "white"
 
-username = Username()
-password = Password()
+username = variables.username
+password = variables.password
 
-ip = "192.168.0.1"
+current_directory = variables.current_directory
 
-pointer = ("%s%s@%s%s:%s-$%s" % (fg(2), username, ip, fg(15), fg(4), attr(0)))
+ip = variables.current_computer
+
+pointer = ("%s%s@%s%s: %s~%s %s$%s" % (fg(2), username, ip, fg(15), fg(4), current_directory, fg(4), attr(0)))
 pointer_color = "white"
 
 error_color = "red"
@@ -161,7 +99,7 @@ def tryHelp():
 def firstScan():
     ipz = str(ips())
     ipz = ipz.split(" ")
-    discovered_ipz = discoveredIps()
+    discovered_ipz = variables.ips
     sinput = getInput(pointer)
     if sinput == "scan":
         for x in range(0, 5):
@@ -174,7 +112,7 @@ def firstScan():
 
         scanned_ip = ipz.pop(rand.randint(0, len(ipz)))
         print("Scanned network on ip 192.168.0.1 and found -\n\n%s\n" % scanned_ip)
-        discovered_ipz.push(scanned_ip)
+        discovered_ipz.append(scanned_ip)
 
         return scanned_ip
     else:
@@ -193,23 +131,27 @@ def firstConnect(ip):
 
 
 def console(username):
-    global pointer
-    username = username
-    pointer = ("%s%s@%s%s:%s-$%s" %
-               (fg(2), username, ip, fg(15), fg(4), attr(0)))
-    starting_text()
-    tryHelp()
-    time.sleep(2)
-    print("The help menu displays the basic commands. As you progress, you will gather more tools, but they all follow the same command format.")
-    time.sleep(4)
-    print("That should be all for now. Go ahead and use %sscan%s to scan your network for another computer.\n" % (fg(4), attr(0)))
-    time.sleep(1)
-    scanned_ip = firstScan()
-    time.sleep(1)
-    print("Nice! You just found your first ip address! Go ahead and connect to the computer with %sconnect%s, plus the ip address obviously.\n" % (fg(4), attr(0)))
-    firstConnect(scanned_ip)
+    # global pointer
+    # username = username
+    # pointer = ("%s%s@%s%s:%s-$%s" %
+    #            (fg(2), username, ip, fg(15), fg(4), attr(0)))
+    # starting_text()
+    # tryHelp()
+    # time.sleep(2)
+    # print("The help menu displays the basic commands. As you progress, you will gather more tools, but they all follow the same command format.")
+    # time.sleep(4)
+    # print("That should be all for now. Go ahead and use %sscan%s to scan your network for another computer.\n" % (fg(4), attr(0)))
+    # time.sleep(1)
+    ##############
+    # scanned_ip = firstScan()
+    # time.sleep(1)
+    # print("Nice! You just found your first ip address! Go ahead and connect to the computer with %sconnect%s, plus the ip address obviously.\n" % (fg(4), attr(0)))
+    # firstConnect(scanned_ip)
 
     while True:
+        current_directory = variables.current_directory
+        ip = variables.current_computer
+        pointer = ("%s%s@%s%s: %s~%s %s$%s" % (fg(2), username, ip, fg(15), fg(4), current_directory, fg(4), attr(0)))
         x = input(pointer + " ")
         if x.strip() != "":
             y = x.split(" ")
@@ -253,4 +195,4 @@ def console(username):
                 print(error_color + error.syntax_error.format(x))
 
 
-# console("strikeriv")
+console("strikeriv")

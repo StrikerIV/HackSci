@@ -1,3 +1,4 @@
+from utils import variables
 import random as rand
 import console
 import time
@@ -113,8 +114,9 @@ def terminal_loading(username, ip):
 
 def startGame(username1, password1):
     create_ips()
-    console.username.value(username1)
-    console.password.value(password1)
+    
+    variables.username = username1
+    variables.password = password1
     homeIp = rand.choice(ip_addresses)
     terminal_loading(username1, homeIp),
 

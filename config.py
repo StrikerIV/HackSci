@@ -1,11 +1,10 @@
 import random as rand
-import console
+from console import variables
 import time
 import os
 
-ips = console.discoveredIps()
+ips = variables.ips
 created_computer_ips = []
-
 
 def randBinary(p):
     key1 = ""
@@ -34,12 +33,31 @@ def add_char(count, char):
     amountOfChar = ''.join([char*count for char in char])
     return amountOfChar
 
+def cd(path=''):
+    createComputer(variables.current_computer)
+    curr_path = variables.current_directory
+    curr_path = curr_path.split("/")
+    if not path: return print(variables.current_directory)
+    if path == "..": 
+        curr_path = curr_path[:-1]
+        curr_path = "/".join(curr_path)
+        variables.current_directory = curr_path
+        return
 
-def createComputer(ip):
+    navPath = ("data/%s%s/%s" % (variables.current_computer, "/".join(curr_path), path))
+
+    if not os.path.isdir(navPath): return print("The system cannot find the path specfied.\n")
+    
+    curr_path = "".join(curr_path).replace(" ", "")
+    print("")
+    variables.current_directory = ("%s/%s" % (curr_path, path))
+
+
+def createComputer(ip=''):
     if ip in created_computer_ips:
         return
 
-    directory = ('data/%s/os' % ip)
+    directory = ('data/%s' % ip)
 
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -62,17 +80,16 @@ def createComputer(ip):
 
 
 def connect(ip=''):
-    print(ips)
-    # if not ip:
-    #     return print("enter an ip address to connect to")
+    if not ip:
+        return print("Enter an ip address to connect to.")
 
-    # if not ip in ips:
-    #     return print("that ip is not valid")
+    if not ip in ips:
+        return print("Can't find a server with that ip address.")
 
-    # for x in range(0, 5):
-    #     print("\nConnecting%s" % add_char(x, "."))
-    #     if not x+1 == 5:
-    #         clear_line(2)
-    #     else:
-    #         print("Established connection to %s\n" % ip)
-    #     time.sleep(0.5)
+    for x in range(0, 5):
+        print("\nConnecting%s" % add_char(x, "."))
+        if not x+1 == 5:
+            clear_line(3)
+        else:
+            print("Established connection to %s\n" % ip)
+        time.sleep(0.5)
