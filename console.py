@@ -198,7 +198,7 @@ def console(username):
     print("Go ahead and do that now.\n")
     time.sleep(2)
     firstProbe()
-    print("")
+    print("As you can see,")
 
     while True:
         current_directory = variables.current_directory
