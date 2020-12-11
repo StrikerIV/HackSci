@@ -7,9 +7,6 @@ import os
 ip_addresses = []
 maxIps = 100
 
-homeIp = ""
-
-
 def s(timeToSleep):
     time.sleep(timeToSleep)
 
@@ -117,7 +114,7 @@ def startGame(username1, password1):
     
     variables.username = username1
     variables.password = password1
-    homeIp = rand.choice(ip_addresses)
-    terminal_loading(username1, homeIp),
+    variables.home_computer = rand.choice(ip_addresses)
+    terminal_loading(username1, variables.home_computer),
 
     #startGame("strikeriv", "test")

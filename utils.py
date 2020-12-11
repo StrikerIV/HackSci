@@ -28,7 +28,10 @@ class ips:
 class variables:
     username = "root"
     password = "roota"
+
+    home_computer = "192.168.0.1"
     current_computer = "192.168.0.1"
     current_directory = ""
+    
     ips = []
 

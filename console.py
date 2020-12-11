@@ -7,10 +7,11 @@ import config
 import time
 import os
 
+
 class error:
-    syntax_error = "'{}' is not a valid command."
+    syntax_error = "'{}' is not a valid command.\n"
     name_error = "'{}' is not defined."
-    type_error = "wrong type for '{}'"
+    type_error = "The supplied parameters for '{}' are the wrong type.\n"
     invalid_parameter_error = "{required_params} required parameters required and {optional_params} optional parameters needed but {params_given} given."
 
 
@@ -26,10 +27,11 @@ current_directory = variables.current_directory
 
 ip = variables.current_computer
 
-pointer = ("%s%s@%s%s: %s~%s %s$%s" % (fg(2), username, ip, fg(15), fg(4), current_directory, fg(4), attr(0)))
+pointer = ("%s%s@%s%s: %s~%s %s$%s" % (fg(2), username, ip,
+                                       fg(15), fg(4), current_directory, fg(4), attr(0)))
 pointer_color = "white"
 
-error_color = "red"
+error_color = fg(1)
 
 ##################################################
 ##################################################
@@ -111,12 +113,12 @@ def firstScan():
                 time.sleep(1)
 
         scanned_ip = ipz.pop(rand.randint(0, len(ipz)))
-        print("Scanned network on ip 192.168.0.1 and found -\n\n%s\n" % scanned_ip)
+        print("\nScanned network on ip 192.168.0.1 and found -\n\n%s\n" % scanned_ip)
         discovered_ipz.append(scanned_ip)
 
         return scanned_ip
     else:
-        print("Hey, I won't help you if you keep this up.")
+        print("EYO STOP TRYIN TO BREAK THE TUTORIAL unless u mistyped it all good ;)")
         time.sleep(1)
         firstScan()
 
@@ -128,6 +130,46 @@ def firstConnect(ip):
         e("config.connect" + '("' + ip + '")')
     else:
         print("EYO STOP TRYIN TO BREAK THE TUTORIAL unless u mistyped it all good ;)")
+        time.sleep(1)
+        firstConnect(ip)
+
+def firstProbe():
+    input = getInput(pointer)
+    if input == "probe":
+        for x in range(0, 4):
+            time.sleep(0.5)
+            print("\nProbing%s" % add_char(x, "."))
+            if not x+1 == 4:
+                clear_lines(2)
+            else:
+                time.sleep(1)
+
+        print("\nProbed computer 192.168.0.1 for ports -\n")
+        time.sleep(2)
+        print("+-------------------+")
+        time.sleep(0.05)
+        print("| Firewall - Open   |")
+        time.sleep(0.05)
+        print("|   Proxy - Open    |")
+        time.sleep(0.05)
+        print("+-------------------+")
+        time.sleep(0.05)
+        print("| FTP: 21 - Closed  |")
+        time.sleep(0.05)
+        print("| SSH: 22 - Open    |")
+        time.sleep(0.05)
+        print("| SQL: 1433 - Open  |")
+        time.sleep(0.05)
+        print("| SMTP: 465 - Open  |")
+        time.sleep(0.05)
+        print("| HTTPS: 443 - Open |")
+        time.sleep(0.05)
+        print("+-------------------+\n")
+    else:
+        print("EYO STOP TRYIN TO BREAK THE TUTORIAL unless u mistyped it all good ;)")
+        time.sleep(1)
+        firstProbe()
+
 
 
 def console(username):
@@ -141,17 +183,28 @@ def console(username):
     # print("The help menu displays the basic commands. As you progress, you will gather more tools, but they all follow the same command format.")
     # time.sleep(4)
     # print("That should be all for now. Go ahead and use %sscan%s to scan your network for another computer.\n" % (fg(4), attr(0)))
-    # time.sleep(1)
-    ##############
+    # time.sleep(2)
+    # #############
     # scanned_ip = firstScan()
     # time.sleep(1)
     # print("Nice! You just found your first ip address! Go ahead and connect to the computer with %sconnect%s, plus the ip address obviously.\n" % (fg(4), attr(0)))
     # firstConnect(scanned_ip)
+    print("\nNow you're connected to their computer, but we don't have access. Let's fix that.")
+    time.sleep(2.5)
+    print("But wait, you ask, isn't this illegal? Yep! But if you're up to the task, you'll never get caught.\n")
+    time.sleep(4)
+    print("We're going to %sprobe%s the computer to scan its ports. We can then hack the ports to gain administrative access to the computer." % (fg(4), attr(0)))
+    time.sleep(4)
+    print("Go ahead and do that now.\n")
+    time.sleep(2)
+    firstProbe()
+    print("")
 
     while True:
         current_directory = variables.current_directory
-        ip = variables.current_computer
-        pointer = ("%s%s@%s%s: %s~%s %s$%s" % (fg(2), username, ip, fg(15), fg(4), current_directory, fg(4), attr(0)))
+        updateIp = variables.current_computer
+        pointer = ("%s%s@%s%s: %s~%s %s$%s" % (fg(2), username, updateIp,
+                                               fg(15), fg(4), current_directory, fg(4), attr(0)))
         x = input(pointer + " ")
         if x.strip() != "":
             y = x.split(" ")
@@ -160,8 +213,6 @@ def console(username):
             for a in y:
                 y[y.index(a)] = '"'+a+'"'
             y = ','.join(y)
-            # print(y)
-            # y = '"' + x + '"'
             sig = ''
             prm = [0, 0]
             try:
@@ -173,18 +224,13 @@ def console(username):
                         else:
                             prm[0] += 1
                     if (len(y.split(",")) == prm[0] or y.split(",") == ['']) or len(y.split(",")) <= (prm[0] + prm[1]):
-                        try:
-                            if not y == "":
-                                e("config." + c + "(" + y + ")")
-                            else:
-                                try:
-                                    e("config." + c + "()")
-                                except:
-                                    print("<[function] {}>".format(c))
-                        except TypeError:
-                            print(error_color + error.type_error.format(x))
-                        except NameError:
-                            print(error_color + error.name_error.format(x))
+                        if not y == "":
+                            e("config." + c + "(" + y + ")")
+                        else:
+                            try:
+                                e("config." + c + "()")
+                            except:
+                                print("<[function] {}>".format(c))
                     else:
                         print(error_color + error.invalid_parameter_error.format(
                             required_params=prm[0], optional_params=prm[1], params_given=len(y.split(","))))
