@@ -5,7 +5,7 @@ import shutil
 from game import startGame
 from pynput import keyboard
 from colored import fg, bg, attr
-from console import username, password
+#from console import username, password
 
 username1 = ""
 password1 = ""

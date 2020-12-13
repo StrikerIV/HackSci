@@ -1,12 +1,11 @@
-from console import variables
+from utils import variables
 from pynput import keyboard
 import random as rand
 import shutil
 import time
 import os
 
-ips = variables.ips
-created_computer_ips = []
+
 
 
 def randBinary(p):
@@ -24,7 +23,6 @@ def randBinary(p):
 def clear_lines(amount):
     for x in range(0, amount):
         print("\033[A\033[A")
-        return x
 
 
 def remove_last_car(string, amount):
@@ -85,10 +83,11 @@ def cp(file='', path=''):
 
 
 def cd(path=''):
-    print(path)
     createComputer(variables.current_computer)
     curr_path = variables.current_directory
     curr_path = curr_path.split("/")
+
+    if path == "ports": return print("The system cannot find the file specified.\n")
     if not path:
         return print(variables.current_directory)
     if path == "..":
@@ -109,7 +108,8 @@ def cd(path=''):
 
 
 def createComputer(ip=''):
-    if ip in created_computer_ips:
+
+    if ip in variables.created_computers_ips:
         return
 
     directory = ('data/%s' % ip)
@@ -120,6 +120,7 @@ def createComputer(ip=''):
         os.makedirs('%s/home' % directory)
         os.makedirs('%s/logs' % directory)
         os.makedirs('%s/os' % directory)
+        os.makedirs('%s/ports' % directory)
 
     os_config = open("%s/os/os-config.sys" % directory, "w+")
     os_config.write(randBinary(1000))
@@ -133,13 +134,52 @@ def createComputer(ip=''):
     server_sys = open("%s/os/server.sys" % directory, "w+")
     server_sys.write(randBinary(500))
 
+    ports = open("%s/ports/ports.txt" % directory, "w+")
+
+    flags = 1
+
+    if variables.has_ftpBounce:
+        flags = flags << 2
+    if variables.has_sshCrack:
+        flags = flags << 3
+    if variables.has_SQLWormOverflow:
+        flags = flags << 4
+    if variables.has_SMTPMailOverflow:
+        flags = flags << 5
+    if variables.has_HTTPS:
+        flags = flags << 6
+
+    ports.write(str(flags))
+
+    variables.created_computers_ips.append(ip)
+
+def scan():
+    ips = variables.ips
+
+    if variables.current_computer in variables.scanned_computers:
+        return print("You've already scanned this computer, there's no need to again.")
+
+    for x in range(0, 5):
+        time.sleep(0.5)
+        print("\nScanning%s" % add_char(x, "."))
+        if not x+1 == 5:
+            clear_lines(2)
+        else:
+            time.sleep(1)
+
+    scanned_ip = ips.pop(rand.randint(0, len(ips)))
+    print("\nScanned network on ip %s and found -\n\n%s\n" % (variables.current_computer, scanned_ip))
+
+    variables.discovered_ips.append(scanned_ip)
+    variables.scanned_computers.append(variables.current_computer) 
+
 
 def connect(ip=''):
 
     if not ip:
         return print("Enter an ip address to connect to.\n")
 
-    if not ip in ips:
+    if not ip in variables.discovered_ips:
         return print("Can't find a server with that ip address.\n")
 
     createComputer(ip)
@@ -152,4 +192,6 @@ def connect(ip=''):
         else:
             time.sleep(1)
 
-    print("\nEstablished connection to %s\n" % ip)
+    variables.current_computer = ip
+    variables.current_directory = ""
+    print("\nEstablished connection to %s." % ip)

@@ -26,9 +26,9 @@ def add_dashes(count):
     headers = ("+------------%s+" % amountOfDashes + "   ")
     return headers
 
-
 def create_ips():
     counter = 0
+    ip_addresses = []
     while True:
         if counter == maxIps:
             break
@@ -43,13 +43,14 @@ def create_ips():
         ip_addresses.append(ip_addr)
         counter += 1
 
+    variables.ips = ip_addresses
 
 def terminal_loading(username, ip):
     os.system('cls')
     print("\nHackSci Kernal V.1.69 Wednesday, October 20, 1971 PTB V.1.42.0 %s@%s" %
           (username, ip))
     s(0.5)
-    print("vm_page_bootstrap: 42069 free pages and 593 wires pages")
+    print("vm_page_bootstrap: 42069 free pages and 593 wired pages")
     s(0.15)
     print("submap [0xffff] mapped, kernal text [0xffff - 9xffff]")
     s(0.15)
@@ -110,11 +111,12 @@ def terminal_loading(username, ip):
 
 
 def startGame(username1, password1):
+
     create_ips()
-    
+
     variables.username = username1
     variables.password = password1
-    variables.home_computer = rand.choice(ip_addresses)
+    variables.home_computer = rand.choice(variables.ips)
     terminal_loading(username1, variables.home_computer),
 
-    #startGame("strikeriv", "test")
+#startGame("strikeriv", "test")

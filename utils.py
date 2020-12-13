@@ -24,14 +24,23 @@ class ips:
     def __str__(self):
         return str(self.ips)
 
-
 class variables:
     username = "root"
     password = "roota"
 
+    blacklistedCommands = [""]
     home_computer = "192.168.0.1"
     current_computer = "192.168.0.1"
     current_directory = ""
     
+    has_ftpBounce = True
+    has_sshCrack = False
+    has_SQLWormOverflow = False
+    has_SMTPMailOverflow = True
+    has_HTTPS = False
+
+    created_computers_ips = []
+    scanned_computers = []
+    discovered_ips = []
     ips = []
 
