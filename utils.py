@@ -1,4 +1,6 @@
 import random as rand
+import numpy as np
+
 
 class ips:
     def __init__(self):
@@ -24,6 +26,7 @@ class ips:
     def __str__(self):
         return str(self.ips)
 
+
 class variables:
     username = "root"
     password = "roota"
@@ -32,15 +35,23 @@ class variables:
     home_computer = "192.168.0.1"
     current_computer = "192.168.0.1"
     current_directory = ""
-    
+
+    has_firewall = False
+    has_proxy = False
+
     has_ftpBounce = True
     has_sshCrack = False
     has_SQLWormOverflow = False
-    has_SMTPMailOverflow = True
-    has_HTTPS = False
+    has_SMTPMailOverflow = False
+    has_HTTPSTrojan = False
 
     created_computers_ips = []
     scanned_computers = []
+    computer_data_ports = []
+    computer_data_ips = []
+    computer_admin = []
     discovered_ips = []
     ips = []
 
+    hacked_computers = []
+    total_hacked = 0

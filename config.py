@@ -1,11 +1,9 @@
 from utils import variables
-from pynput import keyboard
+import numpy as np
 import random as rand
 import shutil
 import time
 import os
-
-
 
 
 def randBinary(p):
@@ -19,6 +17,7 @@ def randBinary(p):
         counter += 1
 
     return(key1)
+
 
 def clear_lines(amount):
     for x in range(0, amount):
@@ -87,7 +86,8 @@ def cd(path=''):
     curr_path = variables.current_directory
     curr_path = curr_path.split("/")
 
-    if path == "ports": return print("The system cannot find the file specified.\n")
+    if path == "ports":
+        return print("The system cannot find the file specified.\n")
     if not path:
         return print(variables.current_directory)
     if path == "..":
@@ -120,7 +120,6 @@ def createComputer(ip=''):
         os.makedirs('%s/home' % directory)
         os.makedirs('%s/logs' % directory)
         os.makedirs('%s/os' % directory)
-        os.makedirs('%s/ports' % directory)
 
     os_config = open("%s/os/os-config.sys" % directory, "w+")
     os_config.write(randBinary(1000))
@@ -134,24 +133,36 @@ def createComputer(ip=''):
     server_sys = open("%s/os/server.sys" % directory, "w+")
     server_sys.write(randBinary(500))
 
-    ports = open("%s/ports/ports.txt" % directory, "w+")
+    firewall = False
+    proxy = False
 
-    flags = 1
+    ftp = False
+    ssh = False
+    sql = False
+    smtp = False
+    https = False
+
+    if variables.has_firewall:
+        firewall = True
+    if variables.has_proxy:
+        proxy = True
 
     if variables.has_ftpBounce:
-        flags = flags << 2
+        ftp = True
     if variables.has_sshCrack:
-        flags = flags << 3
+        ssh = True
     if variables.has_SQLWormOverflow:
-        flags = flags << 4
+        sql = True
     if variables.has_SMTPMailOverflow:
-        flags = flags << 5
-    if variables.has_HTTPS:
-        flags = flags << 6
+        smtp = True
+    if variables.has_HTTPSTrojan:
+        https = True
 
-    ports.write(str(flags))
+    variables.computer_data_ips.append(ip)
+    variables.computer_data_ports.append(
+        [firewall, proxy, "BREAK", ftp, ssh, sql, smtp, https])
+    variables.computer_admin.append(False)
 
-    variables.created_computers_ips.append(ip)
 
 def scan():
     ips = variables.ips
@@ -168,10 +179,201 @@ def scan():
             time.sleep(1)
 
     scanned_ip = ips.pop(rand.randint(0, len(ips)))
-    print("\nScanned network on ip %s and found -\n\n%s\n" % (variables.current_computer, scanned_ip))
+    print("\nScanned network on ip %s and found -\n\n%s\n" %
+          (variables.current_computer, scanned_ip))
 
     variables.discovered_ips.append(scanned_ip)
-    variables.scanned_computers.append(variables.current_computer) 
+    variables.scanned_computers.append(variables.current_computer)
+
+    return scanned_ip
+
+
+def probe():
+    for x in range(0, 5):
+        time.sleep(0.5)
+        print("\nProbing%s" % add_char(x, "."))
+        if not x+1 == 5:
+            clear_lines(2)
+        else:
+            time.sleep(1)
+
+    print("Probed computer %s for ports - \n" % variables.current_computer)
+    time.sleep(0.5)
+
+    index = 0
+
+    loggingStuff = ["| Firewall - %s", "| Proxy - %s", "BREAK",
+                    "| FTP: 21 - %s", "| SSH: 22 - %s", "| SQL: 1433 - %s", "| SMTP: 465 - %s", "| HTTPS: 443 - %s"]
+
+    print("+----------+")
+    time.sleep(0.25)
+
+    for port in variables.computer_data_ports[0]:
+        if port == "BREAK":
+            print("+----------+")
+            time.sleep(0.05)
+        else:
+            if port:
+                port = "Closed"
+            else:
+                port = "Open"
+
+            print(loggingStuff[index] % port)
+            time.sleep(0.05)
+
+        index += 1
+
+    print("+----------+\n")
+
+
+def ftpbounce(port=''):
+    port = str(port)
+    if not port == "21":
+        return print("FTP does not run on this port.\n")
+
+    if variables.computer_data_ports[0][3]:
+        for x in range(0, 5):
+            time.sleep(0.5)
+            print("\nBouncing%s" % add_char(x, "."))
+            if not x+1 == 5:
+                clear_lines(2)
+            else:
+                time.sleep(1)
+
+        print("\nSuccessfully bounced FTP on port 21.\n")
+        variables.computer_data_ports[0][3] = False
+    else:
+        print("This port is already hacked.\n")
+
+
+def sshcrack(port=''):
+    if not port == "22":
+        return print("SSH does not run on this port.\n")
+
+    if variables.computer_data_ports[0][4]:
+        for x in range(0, 5):
+            time.sleep(0.5)
+            print("\nCracking%s" % add_char(x, "."))
+            if not x+1 == 5:
+                clear_lines(2)
+            else:
+                time.sleep(1)
+
+        print("\nSuccessfully cracked SSH on port 21.\n")
+        variables.computer_data_ports[0][4] = False
+    else:
+        print("This port is already hacked.\n")
+
+
+def sqlwormoverflow(port=''):
+    if not port == "1433":
+        return print("SSH does not run on this port.\n")
+
+    if variables.computer_data_ports[0][5]:
+        for x in range(0, 5):
+            time.sleep(0.5)
+            print("\nOverflowing%s" % add_char(x, "."))
+            if not x+1 == 5:
+                clear_lines(2)
+            else:
+                time.sleep(1)
+
+        print("\nSuccessfully overflowed SQL on port 1433 with worm.\n")
+        variables.computer_data_ports[0][5] = False
+    else:
+        print("This port is already hacked.\n")
+
+
+def smtpmailoverflow(port=''):
+    if not port == "465":
+        return print("SMTP does not run on this port.\n")
+
+    if variables.computer_data_ports[0][6]:
+        for x in range(0, 5):
+            time.sleep(0.5)
+            print("\nOverflowing%s" % add_char(x, "."))
+            if not x+1 == 5:
+                clear_lines(2)
+            else:
+                time.sleep(1)
+
+        print("\nSuccessfully overflowed SMTP protocol on port 465.\n")
+        variables.computer_data_ports[0][6] = False
+    else:
+        print("This port is already hacked.\n")
+
+
+def httpstrojan(port=''):
+    if not port == "443":
+        return print("HTTPS does not run on this port.\n")
+
+    if variables.computer_data_ports[0][7]:
+        for x in range(0, 5):
+            time.sleep(0.5)
+            print("\nOverflowing%s" % add_char(x, "."))
+            if not x+1 == 5:
+                clear_lines(2)
+            else:
+                time.sleep(1)
+
+        print("\nSuccessfully inserted trojan on port 443 and hacked port.\n")
+        variables.computer_data_ports[0][7] = False
+    else:
+        print("This port is already hacked.\n")
+
+
+def porthack():
+    unhacked = 0
+    for port in variables.computer_data_ports[0]:
+        if port:
+            if not port == "BREAK":
+                unhacked += 1
+
+    if unhacked > 0:
+        return print("All ports are not hacked, therefor porthack cannot proceed.\n")
+
+    for x in range(0, 5):
+        time.sleep(0.5)
+        print("\nHacking%s" % add_char(x, "."))
+        if not x+1 == 5:
+            clear_lines(2)
+        else:
+            time.sleep(1)
+
+    print("\nSuccessfully hacked computer %s. You are now administrator of this computer.\n" %
+          variables.current_computer)
+
+    variables.hacked_computers.append(variables.current_computer)
+    hacked = variables.total_hacked
+    hacked += 1
+
+    if hacked == 5:
+        variables.has_sshCrack = True
+    elif hacked == 10:
+        variables.has_ftpBounce = True
+    elif hacked == 15:
+        variables.has_SQLWormOverflow = True
+    elif hacked == 20:
+        variables.has_SMTPMailOverflow = True
+    elif hacked == 25:
+        variables.has_HTTPSTrojan = True
+    elif hacked == 50:
+        print("AWE U BEAT THE GAME!!!!!!!!!!\nUnfortuently if you keep going we'll run out of ips and it will crash, so go ahead and crash the game to end the game.\n\n:)")
+
+
+def help():
+    print("\n+==+ Help - Page 1 +==+\n")
+    time.sleep(0.25)
+    print("connect - Connect to a remote computer with specified ip address.\n")
+    print("cd - Navigates to current directory.")
+    print("help - This command!\n")
+    print("ls - Lists files and directories in current directory.")
+    print("mkdir - Makes directory with given path and folder name.")
+    print("probe - Probe the computers firewall.\n")
+    print("ftpbounce - Sends a denial of service attack to the specified FTP port.")
+    print("scan - Scans the current computers network to find connected computers.\n")
+    print("+==+   +==+\n")
+    return
 
 
 def connect(ip=''):

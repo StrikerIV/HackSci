@@ -80,7 +80,7 @@ def create_ips():
 
 
 def starting_text():
-    print("Welcome to HackSci. You're in a framework called, well, HackSci, created by Microsocks.\n")
+    print("\nWelcome to HackSci. You're in a framework called, well, HackSci, created by Microsocks.\n")
     time.sleep(3)
     print("This is a beta program contracted by the U.S. Government as a tool for other countries.")
     time.sleep(4)
@@ -103,20 +103,11 @@ def getInput(p):
 def tryHelp():
     sinput = getInput(pointer)
     if sinput == "help":
-        print("\n+==+ Help - Page 1 +==+\n")
-        time.sleep(0.25)
-        print("connect - Connect to a remote computer with specified ip address\n")
-        print("help - This command!\n")
-        # print("nmap - Look up a computers approximent location.")
-        print("probe - Probe the computers firewall.\n")
-        print("ftpdos - Sends a denial of service attack to the specified FTP port.")
-        print("scan - Scans the current computers network to find connected computers.\n")
-        print("+==+   +==+\n")
-        return
+        return e("config.help()")
     else:
-        print("\nBro, cmon. You're wasting my time. Try again.\n")
+        print("EYO STOP TRYIN TO BREAK THE TUTORIAL unless u mistyped it all good ;)\n")
         time.sleep(1)
-        tryHelp()
+        firstScan()
 
 
 def firstScan():
@@ -135,7 +126,7 @@ def firstConnect(ip):
     if connectt[0] == "connect":
         e("config.connect" + '("' + str(ip) + '")')
     else:
-        print("EYO STOP TRYIN TO BREAK THE TUTORIAL unless u mistyped it all good ;\n)")
+        print("EYO STOP TRYIN TO BREAK THE TUTORIAL unless u mistyped it all good ;)\n")
         time.sleep(1)
         firstConnect(ip)
 
@@ -143,43 +134,38 @@ def firstConnect(ip):
 def firstProbe():
     input = getInput(pointer)
     if input == "probe":
-        for x in range(0, 4):
-            time.sleep(0.5)
-            print("\nProbing%s" % add_char(x, "."))
-            if not x+1 == 4:
-                clear_lines(2)
-            else:
-                time.sleep(1)
-
-        print("\nProbed computer 192.168.0.1 for ports -\n")
-        time.sleep(2)
-        print("+-------------------+")
-        time.sleep(0.05)
-        print("| Firewall - Open   |")
-        time.sleep(0.05)
-        print("|   Proxy - Open    |")
-        time.sleep(0.05)
-        print("+-------------------+")
-        time.sleep(0.05)
-        print("| FTP: 21 - Closed  |")
-        time.sleep(0.05)
-        print("| SSH: 22 - Open    |")
-        time.sleep(0.05)
-        print("| SQL: 1433 - Open  |")
-        time.sleep(0.05)
-        print("| SMTP: 465 - Open  |")
-        time.sleep(0.05)
-        print("| HTTPS: 443 - Open |")
-        time.sleep(0.05)
-        print("+-------------------+\n")
+        e("config.probe()")
     else:
         print("EYO STOP TRYIN TO BREAK THE TUTORIAL unless u mistyped it all good ;)\n")
         time.sleep(1)
-        firstProbe()
+        firstConnect(ip)
+
+
+def firstFTP():
+    input = getInput(pointer)
+    input = input.split()
+    port = input[1]
+    port = str(port)
+    if input[0] == "ftpbounce":
+        e("config.ftpbounce(%s)" % str(port))
+    else:
+        print("EYO STOP TRYIN TO BREAK THE TUTORIAL unless u mistyped it all good ;)\n")
+        time.sleep(1)
+        firstFTP()
+
+
+def firstPH():
+    input = getInput(pointer)
+    if input == "porthack":
+        e("config.porthack()")
+    else:
+        print("EYO STOP TRYIN TO BREAK THE TUTORIAL unless u mistyped it all good ;)\n")
+        time.sleep(1)
+        firstConnect(ip)
 
 
 def console(username):
-    #create_ips()
+    create_ips()
     global pointer
     username = username
     pointer = ("%s%s@%s%s: %s~%s %s$%s" % (fg(2), username, variables.current_computer,
@@ -189,13 +175,15 @@ def console(username):
     time.sleep(2)
     print("The help menu displays the basic commands. As you progress, you will gather more tools, but they all follow the same command format.")
     time.sleep(4)
-    print("That should be all for now. Go ahead and use %sscan%s to scan your network for another computer.\n" % (fg(4), attr(0)))
+    print("That should be all for now. Go ahead and use %sscan%s to scan your network for another computer.\n" % (
+        fg(4), attr(0)))
     time.sleep(2)
-    #############
+    ############
     scanned_ip = firstScan()
     time.sleep(1)
     print("Nice! You just found your first ip address! Go ahead and connect to the computer with %sconnect%s, plus the ip address obviously.\n" % (fg(4), attr(0)))
     time.sleep(2)
+    config.createComputer("192.168.0.1")
     firstConnect(scanned_ip)
     pointer = ("%s%s@%s%s: %s~%s %s$%s" % (fg(2), username, variables.current_computer,
                                            fg(15), fg(4), variables.current_directory, fg(4), attr(0)))
@@ -210,8 +198,18 @@ def console(username):
     firstProbe()
     print("Looks like this server only has port 21 closed, which means all we need to do is crack that port.")
     time.sleep(3)
-    print("To do this, run %sftpbounce%s, plus the port.\n" % (fg(4), attr(0)))
-    #config.createComputer("192.168.0.1")
+    print("To do this, run %sftpbounce%s, plus the port.\n" %
+          (fg(4), attr(0)))
+    firstFTP()
+    time.sleep(2)
+    print("Nice! Now all ports are open, so we can use %sporthack%s to finally gain access. Do the command now to finally getteem!\n" % (fg(4), attr(0)))
+    firstPH()
+    time.sleep(2)
+    print("Congrats! You just hacked your first computer.")
+    time.sleep(2)
+    print("As you hack more computers you will gain more and more tools that you can use, but the computers will get harder. Have fun!\n")
+    time.sleep(5)
+    print(chr(27) + "[2J")
 
     while True:
         current_directory = variables.current_directory
@@ -244,8 +242,8 @@ def console(username):
                         else:
                             try:
                                 e("config." + c + "()")
-                            except Exception as error:
-                                print("<[function] {}> - %s".format(c) % error)
+                            except Exception as erro:
+                                print("<[function] {}> - %s".format(c) % erro)
                     else:
                         print(error_color + error.invalid_parameter_error.format(
                             required_params=prm[0], optional_params=prm[1], params_given=len(y.split(","))))
@@ -256,4 +254,4 @@ def console(username):
                 print(error_color + error.syntax_error.format(x))
 
 
-#console("strikeriv")
+# console("strikeriv")
